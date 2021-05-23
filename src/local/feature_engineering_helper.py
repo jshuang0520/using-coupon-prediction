@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from xgboost import plot_importance
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -86,3 +87,42 @@ class CorrCoef:
                     vmin=-1.0, vmax=1.0,
                     cmap=sns.diverging_palette(220, 10, as_cmap=True),  # "YlGnBu",
                     yticklabels=selected_cols, xticklabels=selected_cols)
+
+
+class XgbcFeatureImportance:
+
+    @staticmethod
+    def plot_feature_importance(xgbc_model, importance_type, plot_horizontally=True):
+        """
+        :param: importance_type Enum(['weight', 'gain', 'cover', 'total_gain', 'total_cover'])
+        --
+
+        reference:
+        https://stackoverflow.com/questions/17109608/change-figure-size-and-figure-format-in-matplotlib
+        https://stackoverflow.com/questions/37627923/how-to-get-feature-importance-in-xgboost
+        """
+        plt.rcParams["figure.figsize"] = [9, 6]
+
+        feature_important = xgbc_model.get_booster().get_score(importance_type=importance_type)
+        keys = list(feature_important.keys())
+        values = list(feature_important.values())
+
+        data = pd.DataFrame(data=values, index=keys, columns=["score"]).sort_values(by="score", ascending=True)
+
+        if plot_horizontally:
+            ax = data.plot(kind='barh')
+            # show values
+            for p in ax.patches:
+                ax.annotate("{:.2f}".format(float(p.get_width())), (p.get_width() * 1.005, p.get_y() * 1.005))
+
+        else:
+            ax = data.plot(kind='bar')
+            # show values
+            for p in ax.patches:
+                ax.annotate("{:.2f}".format(float(p.get_height())), (p.get_x() * 1.005, p.get_height() * 1.005))
+
+    @staticmethod
+    def plot_feature_importance_by_fscore(xgbc_model):
+        plt.rcParams["figure.figsize"] = [9, 6]
+        plot_importance(xgbc_model)
+        plt.show()

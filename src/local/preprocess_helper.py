@@ -60,6 +60,11 @@ class ColumnPreprocess:
 
     @staticmethod
     def get_discount_type(row):
+        """
+        return value
+        0: 折扣率
+        1: 滿 x 減 y 元
+        """
         if row == 'null':
             return 'null'
         elif ':' in row:

@@ -95,11 +95,16 @@ class XgbcFeatureImportance:
     def plot_feature_importance(xgbc_model, importance_type, plot_horizontally=True):
         """
         :param: importance_type Enum(['weight', 'gain', 'cover', 'total_gain', 'total_cover'])
+
+        'weight' - the number of times a feature is used to split the data across all trees.
+        'gain' - the average gain of the feature when it is used in trees
+        'cover' - the average coverage of the feature when it is used in trees
         --
 
         reference:
         https://stackoverflow.com/questions/17109608/change-figure-size-and-figure-format-in-matplotlib
         https://stackoverflow.com/questions/37627923/how-to-get-feature-importance-in-xgboost
+        https://www.zhihu.com/question/63728763
         """
         plt.rcParams["figure.figsize"] = [9, 6]
 
